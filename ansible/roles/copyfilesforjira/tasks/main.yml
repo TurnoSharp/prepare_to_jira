@@ -1,0 +1,15 @@
+---
+# tasks file for deploy_jira
+
+- name: create main directory for jira
+  file: path={{destin_folder}} state=directory
+
+- name: copy archive in dest folder
+  copy: src={{ item }} dest=/home/vagrant mode=0644
+  loop:
+          - "atlassian-jira-software-8.22.3.tar.gz"
+          - "mysql-connector-java-8.0.28.tar.gz"
+
+- name: create assistant directory for jira
+  file: path=/opt/jira-home state=directory
+

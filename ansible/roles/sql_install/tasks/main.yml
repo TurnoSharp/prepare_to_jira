@@ -1,0 +1,49 @@
+---
+# tasks file for sql_install and settings
+
+- block: #sql install block
+
+  - name: install mysql for ubuntu
+    apt : name=mysql-server state=latest
+ 
+  - name   : start mysql and enable
+    service: name=mysql state=started enabled=yes
+
+- block: # change root and create new user for mysql
+  
+  - name: Sets the root password
+    mysql_user:
+        name: root
+        host: "{{ item }}"
+        password: "{{ mysqlrpass }}"
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+    no_log: true 
+    with_items:
+       - "{{ ansible_hostname }}"
+       - 127.0.0.1
+       - ::1
+       - localhost
+    ignore_errors: true     
+
+  - name: create new user for Jira
+    mysql_user:
+          login_user: root
+          login_password: "{{ mysqlrpass }}"  
+          name: Jira
+          host: localhost
+          password: "{{jirapass}}"
+          priv: "*.*:ALL,GRANT"
+    no_log: true
+
+- block: #make database for Jira
+  
+  - name: create JiraDB
+    mysql_db:
+        name: JiraDB
+        state: present
+        encoding: utf8mb4
+        login_user: root
+        login_password: "{{mysqlrpass}}"
+        
+...
+

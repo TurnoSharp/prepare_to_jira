@@ -1,0 +1,24 @@
+---
+
+- name  : deploy jira
+  hosts : jira
+  become: yes
+
+  pre_tasks:
+          - name: update cache
+            apt: update_cache=yes
+
+          - name: install java
+            apt: name=default-jdk state=latest
+          
+          - name: debug install java  
+            shell: java -version
+            register: javaresult      
+            
+          - debug:
+              var: javaresult
+
+  roles:
+   - sql_install
+   - copyfilesforjira
+ 

@@ -1,0 +1,25 @@
+
+# settings for mysql before connecting to Jira
+
+# find the configuration file mysqld.cnf and add the following lines:
+
+[mysqld]
+...
+default-storage-engine=INNODB
+innodb_default_row_format=DYNAMIC
+innodb_log_file_size=2G
+sql_mode = NO_AUTO_VALUE_ON_ZERO
+
+where:
+
+default-storage-engine - defines the mechanism for storing data in the table by default (it will be used if it is not explicitly specified using ENGINE when creating the table).
+    
+innodb_default_row_format - The default row format (it will be used if not specified explicitly with ROW_FORMAT).
+
+innodb_log_file_size - redo log size for fixing data change operations. The larger its value, the better the performance of the server by reducing disk operations. Too large a value consumes a lot of memory.
+
+sql_mode - SQL mode. In this example, when receiving a value of 0 for a field with auto_increment, the system will treat it exactly as 0.
+
+and restart mysql.service
+
+
